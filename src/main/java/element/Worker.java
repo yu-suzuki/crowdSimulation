@@ -2,20 +2,24 @@ package element;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ysuzuki on 2016/08/09.
+ * Worker
  */
 public class Worker {
-    int id;
-    double probability;
+    private int id;
+    private double probability;
     private double ratio;
+    private List<Integer> items;
 
     public Worker(int id, double probability) {
         this.id = id;
         this.probability = probability;
         this.ratio  = -1;
+        this.items = new ArrayList<>();
     }
 
     public double getRatio() {
@@ -55,5 +59,17 @@ public class Worker {
             e.printStackTrace();
         }
         return selectItem;
+    }
+
+    public void addItem(int itemID) {
+        this.items.add(itemID);
+    }
+
+    public boolean containItem(int id) {
+        return this.items.contains(id);
+    }
+
+    public void setRatio(double ratio) {
+        this.ratio = ratio;
     }
 }

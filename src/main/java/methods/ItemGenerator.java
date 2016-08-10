@@ -6,21 +6,19 @@ import element.Worker;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ysuzuki on 2016/08/09.
+ * ItemGenerator
  */
 public class ItemGenerator {
-    public List<Item> generateItems(int num, int variation) {
-        List<Item> items = new ArrayList<>();
+    Map<Integer, Item> generateItems(int num, int variation) {
+        Map<Integer, Item> items = new HashMap<>();
         try {
             SecureRandom number = SecureRandom.getInstance("SHA1PRNG");
             for (int i = 0; i < num; i++) {
-                items.add(new Item(i, number.nextInt(variation)));
+                items.put(i, new Item(i, number.nextInt(variation)));
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -29,7 +27,7 @@ public class ItemGenerator {
     }
 
 
-    public List<Worker> generateWorkers(int num) {
+    List<Worker> generateWorkers(int num) {
         List<Worker> workers = new ArrayList<>();
         try {
             SecureRandom number = SecureRandom.getInstance("SHA1PRNG");
@@ -42,9 +40,9 @@ public class ItemGenerator {
         return workers;
     }
 
-    public List<Candidate> getCandidates(List<Item> trueItems) {
+    List<Candidate> getCandidates(Map<Integer, Item> trueItems) {
         List<Candidate> candidates = new ArrayList<>();
-        for(Item i: trueItems){
+        for(Item i: trueItems.values()){
             candidates.add(new Candidate(i.getID(), 0));
         }
         return candidates;

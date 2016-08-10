@@ -1,15 +1,10 @@
-import element.EvaluationResult;
-import element.Item;
-import element.Result;
-import element.Worker;
+import element.*;
 import methods.Assessment;
 import methods.ItemGenerator;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,24 +12,44 @@ import java.util.concurrent.Future;
 
 /**
  * Created by ysuzuki on 2016/08/09.
+ * Main
  */
 public class Main {
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(4);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
         List<Future<EvaluationResult>> futures = new ArrayList<>();
-        Assessment assess = new Assessment(1000,2,100);
-        futures.add(executor.submit(assess));
+        Map<Condition, List<EvaluationResult>> results = new HashMap<>();
+        for(int i = 0; i < 1000; i++) {
+            Assessment a = new Assessment(100,2,5,2);
+            Future<EvaluationResult> f = executor.submit(a);
+            futures.add(f);
+        }
         executor.shutdown();
 
         for(Future<EvaluationResult> future: futures){
             try {
                 EvaluationResult er = future.get();
-                System.out.println(er.getRatio());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+                Condition condition = er.getCondition();
+                results.putIfAbsent(condition, new ArrayList<>());
+                List<EvaluationResult> result = results.get(condition);
+                result.add(er);
+                results.put(condition, result);
+                System.out.println(er.getRatio()+"/"+er.getVoteCount());
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
+        }
+
+        for(Map.Entry<Condition, List<EvaluationResult>> e: results.entrySet()){
+
+            double accuracySum = 0;
+            double voteCountSum = 0;
+            for(EvaluationResult er: e.getValue()){
+                accuracySum += er.getRatio();
+                voteCountSum += er.getVoteCount();
+            }
+
+            System.out.println(e.getKey().getItemNum()+":"+e.getValue().size()+":"+accuracySum/(double)e.getValue().size());
         }
 
     }

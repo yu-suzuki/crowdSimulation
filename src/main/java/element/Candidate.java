@@ -2,10 +2,12 @@ package element;
 
 /**
  * Created by ysuzuki on 2016/08/09.
+ * Candidate
  */
 public class Candidate {
-    int id;
-    double priority;
+    private int id;
+    private double priority;
+
     public Candidate(int id, double priority) {
         this.id = id;
         this.priority = priority;

@@ -2,9 +2,10 @@ package element;
 
 /**
  * Created by ysuzuki on 2016/08/09.
+ * Item
  */
 public class Item {
-    int id,ans;
+    private int id,ans;
     public Item(int id, int ans) {
         this.id = id;
         this.ans = ans;
